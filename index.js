@@ -10,4 +10,6 @@ app.use(express.json());
 
 app.use(routes);
 
+app.set('view engine', 'ejs');
+
 app.listen(PORT);

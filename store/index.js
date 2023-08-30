@@ -1,7 +1,5 @@
-const Book = require('./Book');
-
 const store = {
-  books: [new Book()],
+  books: [],
 };
 
 module.exports = store;

@@ -1,0 +1,51 @@
+<%- include('../partials/layout-start') %>
+
+
+<div class="container m-5">
+    <div class="min-w-0 flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">My Books</h1>
+        <form action="/api/books/create" method="GET">
+            <button class="p-2 border rounded border-blue-600 text-xl font-medium text-blue-600">+ Add book</button>
+        </form>
+    </div>
+    <ul>
+        <% books.map(el => { %>
+            <% const fileCover = el.fileCover ? el.fileCover : 'https://placehold.co/50x50' %>
+            <li class="flex justify-between gap-x-6 my-3 pr-2 border rounded border-gray-400">
+                <div class="flex min-w-0 gap-x-4">
+                    <a href="/api/books/<%= el.id %>">
+                        <img class="h-20 w-20 flex-none rounded-sm bg-gray-50" src="<%= fileCover %>"
+                             alt="<%= el.fileName %>"
+                        >
+                    </a>
+                    <div class="min-w-0 flex-auto">
+                        <p class="text-sm font-semibold leading-6 text-gray-900">
+                            <%= el.title %>
+                            <span class="ml-1 text-xs leading-5 text-gray-500"><%= el.favorite ? el.favorite : undefined %></span>
+                        </p>
+                        <p class="text-sm leading-6 text-gray-900"><%= el.authors %></p>
+                        <p class="mt-1 truncate text-xs leading-5 text-gray-500"><%= el.description %></p>
+                    </div>
+                </div>
+                <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end mt-2 justify-between">
+                    <form action="/api/books/<%= el.id%>/update" method="GET">
+                        <button>
+                            <svg width="25px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+                                <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z" />
+                            </svg>
+                        </button>
+                    </form>
+                    <form action="/api/books/<%= el.id%>/delete" method="POST">
+                        <button>
+                            <svg width="25px" xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
+                                <path d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"/>
+                            </svg>
+                        </button>
+                    </form>
+
+                </div>
+            </li>
+        <% }) %>
+    </ul>
+</div>
+<%- include('../partials/layout-end') %>

@@ -10,7 +10,13 @@ router.post('/api/user/login', (req, res) => {
 });
 
 router.get('/api/books', (req, res) => {
-  res.json(store.books);
+  res.render('pages/index', {
+    books: store.books,
+  });
+});
+
+router.get('/api/books/create', (req, res) => {
+  res.render('pages/create');
 });
 
 router.get('/api/books/:id', (req, res) => {
@@ -23,7 +29,26 @@ router.get('/api/books/:id', (req, res) => {
     return res.json('404 | book is not found');
   }
 
-  res.json(books[idx]);
+  res.render('pages/view', {
+    bookInfo: books[idx],
+  });
+});
+
+router.get('/api/books/:id/update', (req, res) => {
+  const { books } = store;
+  const { id } = req.params;
+  const idx = books.findIndex(el => {
+    return el.id === id;
+  });
+
+  if (idx === -1) {
+    res.status(404);
+    return res.json('404 | book is not found');
+  }
+
+  res.render('pages/update', {
+    bookInfo: books[idx],
+  });
 });
 
 router.get('/api/books/:id/download', (req, res) => {
@@ -39,7 +64,7 @@ router.get('/api/books/:id/download', (req, res) => {
   res.download(book.fileBook);
 });
 
-router.post('/api/books', fileMulter.single('book-file'), (req, res) => {
+router.post('/api/books/create', fileMulter.single('book-file'), (req, res) => {
   if (req.file) {
     const { books } = store;
     const { title, description, authors, favorite, fileCover } = req.body;
@@ -50,23 +75,26 @@ router.post('/api/books', fileMulter.single('book-file'), (req, res) => {
 
     books.push(newBook);
 
-    res.status(201);
-    res.json(newBook);
+    res.redirect(301, `/api/books`);
   }
 
   res.json();
 });
 
-router.put('/api/books/:id', (req, res) => {
+router.post('/api/books/:id/update', fileMulter.single('book-file'), (req, res) => {
   const { books } = store;
   const { id } = req.params;
-  const { title, description, authors, favorite, fileCover, fileName } = req.body;
+
   const idx = books.findIndex(el => el.id === id);
 
   if (idx === -1) {
     res.status(404);
     return res.json('404 | book is not found');
   }
+
+  const { title, description, authors, favorite, fileCover } = req.body;
+  const fileName = req.file?.filename ? req.file.filename : books[idx].fileName;
+  const fileBook = req.file?.path ? req.file.path : books[idx].fileBook;
 
   books[idx] = {
     ...books[idx],
@@ -76,12 +104,13 @@ router.put('/api/books/:id', (req, res) => {
     favorite,
     fileCover,
     fileName,
+    fileBook,
   };
 
-  res.json(books[idx]);
+  res.redirect(301, `/api/books`);
 });
 
-router.delete('/api/books/:id', (req, res) => {
+router.post('/api/books/:id/delete', (req, res) => {
   const { books } = store;
   const { id } = req.params;
   const idx = books.findIndex(el => el.id === id);
@@ -92,7 +121,8 @@ router.delete('/api/books/:id', (req, res) => {
   }
 
   books.splice(idx, 1);
-  res.json('ok');
+
+  res.redirect(301, `/api/books`);
 });
 
 module.exports = router;
