@@ -5,8 +5,8 @@ class Book {
     title = '',
     description = '',
     authors = '',
-    favorite = 'Нет',
-    fileCover = '',
+    favorite = undefined,
+    fileCover = undefined,
     fileName = '',
     fileBook = '',
     id = uuid()
